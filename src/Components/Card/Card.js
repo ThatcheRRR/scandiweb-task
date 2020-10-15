@@ -1,21 +1,13 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import './card.scss';
 
-const Card = ({ num, width }) => {
-
-  const [color, setColor] = useState(false);
-  
-  const handleClick = () => {
-    setColor(prev => !prev)
-  };
-
+const Card = ({ num, width, pos }) => {
   const styles = useMemo(() => ({
-    color: color ? 'red' : 'blue',
     width: width,
-  }), [color]);
+  }), [width]);
 
   return(
-    <div onClick = {handleClick} style = {styles} className = 'swiper__card card'>Slide {num}</div>
+    <div data-pos = {pos} style = {styles} className = 'swiper__card card'>Slide {num}</div>
   );
 };
 

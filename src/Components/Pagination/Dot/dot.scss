@@ -1,0 +1,16 @@
+.dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: darken(aqua, 20%);
+    border: 3px solid darken(aqua, 20%);
+
+    &:hover {
+        cursor: pointer;
+        background-color: #fff;
+    }
+
+    &:not(:last-of-type) {
+        margin-right: 10px
+    }
+}

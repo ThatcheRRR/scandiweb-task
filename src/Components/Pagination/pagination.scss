@@ -1,0 +1,8 @@
+.pagination {
+    z-index: 5;
+    position: absolute;
+    display: flex;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
