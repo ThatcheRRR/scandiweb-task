@@ -4,7 +4,9 @@ import './app.scss';
 
 const App = () => {
   return(
-    <Slider />
+    <div className = 'wrapper'>
+      <Slider />
+    </div>
   )
 };
 
