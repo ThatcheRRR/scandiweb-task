@@ -8,7 +8,7 @@ const App = () => {
 
   return(
     <div className = 'wrapper'>
-      <Slider slidesCount = {slidesCount} />
+      <Slider slidesCount = {slidesCount} viewCount = {2} />
       <Pagination slidesCount = {slidesCount} />
     </div>
   )

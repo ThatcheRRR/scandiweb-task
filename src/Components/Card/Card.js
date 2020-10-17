@@ -3,7 +3,7 @@ import './card.scss';
 
 const Card = ({ num, width, pos }) => {
   const styles = useMemo(() => ({
-    width: width,
+    width: '600px',
   }), [width]);
 
   return(
