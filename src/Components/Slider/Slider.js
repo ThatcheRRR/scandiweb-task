@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Card from '../Card';
-import { initApp, changeCard } from '../../redux/actions';
+import { initApp, changeCard, windowResized } from '../../redux/actions';
 import { button_styles } from './button-styles';
 import './slider.scss';
 
@@ -13,14 +13,29 @@ class Slider extends React.Component {
 
   componentDidMount() {
     const { initApp } = this.props;
-    const arr = [];
+    const slides = [];
     for(let i = 0; i < this.props.slidesCount; i++) {
-      arr.push(
-        <Card pos = {i} key = {i} num = {i + 1} />
+      slides.push(
+        <Card key = {i} num = {i + 1} />
       )
     }
-    initApp(arr);
+    initApp(slides);
+    window.addEventListener('resize', this.getSliderWidth);
+    window.onload = this.getSliderWidth;
   }
+
+  getSliderWidth = () => {
+    let viewCount = 3;
+    const sliderWidth = parseInt(getComputedStyle(this.sliderRef.current).width);
+    if(sliderWidth > 501 && sliderWidth <= 768) {
+      viewCount = 2;
+    } else if(sliderWidth <= 500) {
+      viewCount = 1;
+    } else {
+      viewCount = 3;
+    }
+    this.props.windowResized(sliderWidth, viewCount);
+  };
 
   handleNext = () => {
     const { changeCard, currentCard, slidesCount, viewCount } = this.props;
@@ -49,8 +64,8 @@ class Slider extends React.Component {
   }
 
   handleChangeCardNum = () => {
-    const { currentCard } = this.props;
-    this.sliderRef.current.style.transform = `translateX(-${600 * currentCard}px)`;
+    const { currentCard, cardWidth } = this.props;
+    this.sliderRef.current.style.transform = `translateX(-${cardWidth * currentCard}px)`;
   };
 
   render() {
@@ -71,12 +86,14 @@ const mapStateToProps = state => ({
   viewCount: state.viewCount,
   currentCard: state.currentCard,
   cardWidth: state.cardWidth,
-  slides: state.slides
+  slides: state.slides,
+  sliderWidth: state.sliderWidth
 });
 
 const mapDispatchToProps = {
   initApp,
-  changeCard
+  changeCard,
+  windowResized
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Slider);

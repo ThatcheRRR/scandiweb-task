@@ -1,13 +1,14 @@
 export const button_styles = {
   common: {
     position: 'absolute',
+    zIndex: '15',
     top: '0',
     width: '30px',
     height: '100%',
     outline: 'none',
     border: 'none',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: '15'
+    color: '#fff',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
   left: {
     left: '0'

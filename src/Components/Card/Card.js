@@ -1,10 +1,13 @@
 import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import './card.scss';
 
-const Card = ({ num, width }) => {
+const Card = ({ num }) => {
+  const cardWidth = useSelector(state => state.cardWidth);
+
   const styles = useMemo(() => ({
-    width: '600px',
-  }), [width]);
+    width: cardWidth
+  }), [cardWidth]);
 
   return(
     <div style = {styles} className = 'swiper__card card'>Slide {num}</div>

@@ -1,4 +1,4 @@
-import { INIT, CHANGE_CARD } from './types';
+import { INIT, CHANGE_CARD, WINDOW_RESIZED } from './types';
 
 export const initApp = (slides) => {
   return{
@@ -13,3 +13,11 @@ export const changeCard = (newCard) => {
     newCard
   }
 };
+
+export const windowResized = (sliderWidth, viewCount) => {
+  return{
+    type: WINDOW_RESIZED,
+    sliderWidth,
+    viewCount
+  }
+}

@@ -4,6 +4,7 @@
     border-radius: 50%;
     background-color: #fff;
     border: 3px solid darken(aqua, 20%);
+    transition: .2s ease-in;
 
     &:hover {
         cursor: pointer;
