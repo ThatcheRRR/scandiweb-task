@@ -4,12 +4,10 @@ import Pagination from '../Pagination';
 import './app.scss';
 
 const App = () => {
-  const slidesCount = 5;
-
   return(
     <div className = 'wrapper'>
-      <Slider slidesCount = {slidesCount} viewCount = {2} />
-      <Pagination slidesCount = {slidesCount} />
+      <Slider />
+      <Pagination />
     </div>
   )
 };

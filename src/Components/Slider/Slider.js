@@ -1,57 +1,57 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Card from '../Card';
+import { initApp, changeCard } from '../../redux/actions';
 import './slider.scss';
 
 class Slider extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      currentCard: 0,
-      cardWidth: 0,
-      slides: []
-    }
-
     this.sliderRef = React.createRef();
     this.handleNext = this.handleNext.bind(this);
     this.handlePrev = this.handlePrev.bind(this);
   }
 
   componentDidMount() {
+    const { initApp } = this.props;
     const arr = [];
     for(let i = 0; i < this.props.slidesCount; i++) {
       arr.push(
         <Card pos = {i} key = {i} num = {i + 1} />
       )
     }
-    this.setState({ slides: arr });
+    initApp(arr);
   }
 
   handleNext = () => {
-    if(this.state.currentCard < this.props.slidesCount - this.props.viewCount) {
-      const newCard = this.state.currentCard + 1;
-
-      this.setState({ currentCard: newCard }, () => {
-        this.sliderRef.current.style.transform = `translateX(-${600 * this.state.currentCard}px)`;
-      });
+    const { changeCard, currentCard, slidesCount, viewCount } = this.props;
+    const newCard = currentCard + 1;
+    changeCard(newCard);
+    if(currentCard < slidesCount - viewCount) {
     } else {
-      this.setState({ currentCard: 0 }, () => {
-        this.sliderRef.current.style.transform = `translateX(-${600 * this.state.currentCard}px)`;
-      });
+      changeCard(0);
     }
   };
 
   handlePrev = () => {
-    if(this.state.currentCard > 0) {
-      const newCard = this.state.currentCard - 1;
-
-      this.setState({ currentCard: newCard }, () => {
-        this.sliderRef.current.style.transform = `translateX(-${600 * this.state.currentCard}px)`;
-      });
+    const { changeCard, currentCard, slidesCount, viewCount } = this.props;
+    if(currentCard > 0) {
+      const newCard = currentCard - 1;
+      changeCard(newCard);
     } else {
-      this.setState({ currentCard: this.props.slidesCount - this.props.viewCount }, () => {
-        this.sliderRef.current.style.transform = `translateX(-${600 * this.state.currentCard}px)`;
-      });
+      changeCard(slidesCount - viewCount);
     }
+  };
+
+  componentDidUpdate(prevProps) {
+    if(prevProps.currentCard !== this.props.currentCard) {
+      this.handleChangeCardNum();
+    }
+  }
+
+  handleChangeCardNum = () => {
+    const { currentCard } = this.props;
+    this.sliderRef.current.style.transform = `translateX(-${600 * currentCard}px)`;
   };
 
   render() {
@@ -60,7 +60,7 @@ class Slider extends React.Component {
       <button onClick = {this.handlePrev} style = {{...buttons.common, ...buttons.left}}>prev</button>
       <button onClick = {this.handleNext} style = {{...buttons.common, ...buttons.right}}>next</button>
         <section ref = {this.sliderRef} className = 'slider'>
-          {this.state.slides}
+          {this.props.slides}
         </section>
       </>
     )
@@ -86,4 +86,17 @@ const buttons = {
   }
 }
 
-export default Slider;
+const mapStateToProps = state => ({
+  slidesCount: state.slidesCount,
+  viewCount: state.viewCount,
+  currentCard: state.currentCard,
+  cardWidth: state.cardWidth,
+  slides: state.slides
+});
+
+const mapDispatchToProps = {
+  initApp,
+  changeCard
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Slider);
