@@ -27,7 +27,19 @@ class Slider extends React.Component {
     }
     initApp(slides);
     window.addEventListener('resize', this.getSliderWidth);
-    window.onload = this.getSliderWidth;
+    window.addEventListener('load', this.getSliderWidth);
+    if (window.PointerEvent) {
+      window.addEventListener('pointerdown', this.pointerStart);
+      window.addEventListener('pointermove', this.pointerMove);
+      window.addEventListener('pointerup', this.pointerEnd);  
+    } else {
+      window.addEventListener('touchdown', this.pointerStart);
+      window.addEventListener('touchmove', this.pointerMove);
+      window.addEventListener('touchup', this.pointerEnd);  
+      window.addEventListener('mousedown', this.pointerStart);
+      window.addEventListener('mousemove', this.pointerMove);
+      window.addEventListener('mouseup', this.pointerEnd);  
+    }
   }
 
   getSliderWidth = () => {
@@ -83,7 +95,6 @@ class Slider extends React.Component {
   }
 
   pointerMove = (e) => {
-    e.persist();
     e.preventDefault();
     const { isClicked, initialPos, transform } = this.state;
     if(isClicked) {
@@ -124,7 +135,7 @@ class Slider extends React.Component {
       <>
       <button onClick = {this.handlePrev} style = {{...button_styles.common, ...button_styles.left}}>prev</button>
       <button onClick = {this.handleNext} style = {{...button_styles.common, ...button_styles.right}}>next</button>
-        <section onPointerDown = {this.pointerStart} onPointerMove = {this.pointerMove} onPointerUp = {this.pointerEnd} ref = {this.sliderRef} className = 'slider'>
+        <section ref = {this.sliderRef} className = 'slider'>
           {this.props.slides}
         </section>
       </>
