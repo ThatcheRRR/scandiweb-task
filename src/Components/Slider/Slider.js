@@ -33,9 +33,9 @@ class Slider extends React.Component {
       window.addEventListener('pointermove', this.pointerMove);
       window.addEventListener('pointerup', this.pointerEnd);  
     } else {
-      window.addEventListener('touchdown', this.pointerStart);
+      window.addEventListener('touchstart', this.pointerStart);
       window.addEventListener('touchmove', this.pointerMove);
-      window.addEventListener('touchup', this.pointerEnd);  
+      window.addEventListener('touchend', this.pointerEnd);  
       window.addEventListener('mousedown', this.pointerStart);
       window.addEventListener('mousemove', this.pointerMove);
       window.addEventListener('mouseup', this.pointerEnd);  
@@ -88,17 +88,20 @@ class Slider extends React.Component {
 
   pointerStart = (e) => {
     const transformMatrix = getComputedStyle(this.sliderRef.current).transform;
+    const newPos = e.clientX || e.touches[0].clientX;
     if (transformMatrix) {
       this.setState({ transform: parseInt(transformMatrix.split(',')[4].trim()) });
     }
-    this.setState({ isClicked: true, initialPos: e.clientX });
+    this.setState({ isClicked: true, initialPos: newPos });
   }
 
   pointerMove = (e) => {
-    e.preventDefault();
+    if(window.PointerEvent) {
+      e.preventDefault();
+    }
     const { isClicked, initialPos, transform } = this.state;
     if(isClicked) {
-      const currentPos = e.clientX;
+      const currentPos = e.clientX || e.touches[0].clientX;
       const diff = currentPos - initialPos;
       this.sliderRef.current.style.transform = `translateX(${transform + diff}px)`;
       this.setState({ diff });
@@ -109,6 +112,7 @@ class Slider extends React.Component {
     const { diff } = this.state;
     const { cardWidth, currentCard, slidesCount, viewCount, changeCard } = this.props;
     this.setState({ isClicked: false });
+    console.log(diff)
     if(diff > cardWidth / 5) {
       if(currentCard === 0) {
         changeCard(slidesCount - viewCount);

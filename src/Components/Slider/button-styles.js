@@ -3,7 +3,7 @@ export const button_styles = {
     position: 'absolute',
     zIndex: '15',
     top: '0',
-    width: '30px',
+    width: '45px',
     height: '100%',
     outline: 'none',
     border: 'none',
