@@ -2,14 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Card from '../Card';
 import { initApp, changeCard } from '../../redux/actions';
+import { button_styles } from './button-styles';
 import './slider.scss';
 
 class Slider extends React.Component {
   constructor(props) {
     super(props);
     this.sliderRef = React.createRef();
-    this.handleNext = this.handleNext.bind(this);
-    this.handlePrev = this.handlePrev.bind(this);
   }
 
   componentDidMount() {
@@ -25,9 +24,9 @@ class Slider extends React.Component {
 
   handleNext = () => {
     const { changeCard, currentCard, slidesCount, viewCount } = this.props;
-    const newCard = currentCard + 1;
-    changeCard(newCard);
     if(currentCard < slidesCount - viewCount) {
+      const newCard = currentCard + 1;
+      changeCard(newCard);
     } else {
       changeCard(0);
     }
@@ -57,8 +56,8 @@ class Slider extends React.Component {
   render() {
     return(
       <>
-      <button onClick = {this.handlePrev} style = {{...buttons.common, ...buttons.left}}>prev</button>
-      <button onClick = {this.handleNext} style = {{...buttons.common, ...buttons.right}}>next</button>
+      <button onClick = {this.handlePrev} style = {{...button_styles.common, ...button_styles.left}}>prev</button>
+      <button onClick = {this.handleNext} style = {{...button_styles.common, ...button_styles.right}}>next</button>
         <section ref = {this.sliderRef} className = 'slider'>
           {this.props.slides}
         </section>
@@ -66,25 +65,6 @@ class Slider extends React.Component {
     )
   }
 };
-
-const buttons = {
-  common: {
-    position: 'absolute',
-    top: '0',
-    width: '30px',
-    height: '100%',
-    outline: 'none',
-    border: 'none',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: '15'
-  },
-  left: {
-    left: '0'
-  },
-  right: {
-    right: '0'
-  }
-}
 
 const mapStateToProps = state => ({
   slidesCount: state.slidesCount,

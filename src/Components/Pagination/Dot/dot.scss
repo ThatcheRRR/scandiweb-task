@@ -2,15 +2,19 @@
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    background-color: darken(aqua, 20%);
+    background-color: #fff;
     border: 3px solid darken(aqua, 20%);
 
     &:hover {
         cursor: pointer;
-        background-color: #fff;
+        background-color: darken(aqua, 20%);
     }
 
     &:not(:last-of-type) {
         margin-right: 10px
+    }
+
+    &--active {
+        background-color: darken(aqua, 20%);
     }
 }

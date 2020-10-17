@@ -1,7 +1,7 @@
 import {INIT, CHANGE_CARD} from './types';
 
 const initialState = {
-  slidesCount: 5,
+  slidesCount: 7,
   viewCount: 2,
   currentCard: 0,
   cardWidth: 0,
