@@ -8,6 +8,12 @@ import './slider.scss';
 class Slider extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      initialPos: null,
+      isClicked: false,
+      transform: 0,
+      diff: 0
+    };
     this.sliderRef = React.createRef();
   }
 
@@ -35,7 +41,7 @@ class Slider extends React.Component {
       viewCount = 3;
     }
     this.props.windowResized(sliderWidth, viewCount);
-  };
+  }
 
   handleNext = () => {
     const { changeCard, currentCard, slidesCount, viewCount } = this.props;
@@ -45,7 +51,7 @@ class Slider extends React.Component {
     } else {
       changeCard(0);
     }
-  };
+  }
 
   handlePrev = () => {
     const { changeCard, currentCard, slidesCount, viewCount } = this.props;
@@ -55,7 +61,7 @@ class Slider extends React.Component {
     } else {
       changeCard(slidesCount - viewCount);
     }
-  };
+  }
 
   componentDidUpdate(prevProps) {
     if(prevProps.currentCard !== this.props.currentCard) {
@@ -66,14 +72,59 @@ class Slider extends React.Component {
   handleChangeCardNum = () => {
     const { currentCard, cardWidth } = this.props;
     this.sliderRef.current.style.transform = `translateX(-${cardWidth * currentCard}px)`;
-  };
+  }
+
+  pointerStart = (e) => {
+    const transformMatrix = getComputedStyle(this.sliderRef.current).transform;
+    if (transformMatrix) {
+      this.setState({ transform: parseInt(transformMatrix.split(',')[4].trim()) });
+    }
+    this.setState({ isClicked: true, initialPos: e.clientX });
+  }
+
+  pointerMove = (e) => {
+    e.persist();
+    e.preventDefault();
+    const { isClicked, initialPos, transform } = this.state;
+    if(isClicked) {
+      const currentPos = e.clientX;
+      const diff = currentPos - initialPos;
+      this.sliderRef.current.style.transform = `translateX(${transform + diff}px)`;
+      this.setState({ diff });
+    }
+  }
+
+  pointerEnd = () => {
+    const { diff } = this.state;
+    const { cardWidth, currentCard, slidesCount, viewCount, changeCard } = this.props;
+    this.setState({ isClicked: false });
+    if(diff > cardWidth / 5) {
+      if(currentCard === 0) {
+        changeCard(slidesCount - viewCount);
+      } else {
+        changeCard(currentCard - 1);
+      }
+    } else {
+      this.handleChangeCardNum();
+    }
+
+    if(diff < -(cardWidth / 5)) {
+      if(currentCard === slidesCount - viewCount) {
+        changeCard(0);
+      } else {
+        changeCard(currentCard + 1);
+      }
+    } else {
+      this.handleChangeCardNum();
+    }
+  }
 
   render() {
     return(
       <>
       <button onClick = {this.handlePrev} style = {{...button_styles.common, ...button_styles.left}}>prev</button>
       <button onClick = {this.handleNext} style = {{...button_styles.common, ...button_styles.right}}>next</button>
-        <section ref = {this.sliderRef} className = 'slider'>
+        <section onPointerDown = {this.pointerStart} onPointerMove = {this.pointerMove} onPointerUp = {this.pointerEnd} ref = {this.sliderRef} className = 'slider'>
           {this.props.slides}
         </section>
       </>

@@ -3,5 +3,6 @@
     width: 100%;
     display: flex;
     transform: translateX(0px);
-    transition: .15s ease;
+    transition: .15s ease-out;
+    transition-delay: 0ms;
 }
