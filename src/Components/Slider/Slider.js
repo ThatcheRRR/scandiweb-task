@@ -112,7 +112,6 @@ class Slider extends React.Component {
     const { diff } = this.state;
     const { cardWidth, currentCard, slidesCount, viewCount, changeCard } = this.props;
     this.setState({ isClicked: false });
-    console.log(diff)
     if(diff > cardWidth / 5) {
       if(currentCard === 0) {
         changeCard(slidesCount - viewCount);
