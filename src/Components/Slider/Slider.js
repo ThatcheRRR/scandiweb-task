@@ -155,10 +155,12 @@ const mapStateToProps = state => ({
   sliderWidth: state.sliderWidth
 });
 
-const mapDispatchToProps = {
-  initApp,
-  changeCard,
-  windowResized
+const mapDispatchToProps = dispatch => {
+  return {
+    initApp: (...args) => dispatch(initApp(...args)),
+    changeCard: (...args) => dispatch(changeCard(...args)),
+    windowResized: (...args) => dispatch(windowResized(...args))
+  }
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Slider);
