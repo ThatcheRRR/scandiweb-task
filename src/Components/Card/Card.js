@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import './card.scss';
 
-const Card = ({ num }) => {
+const Card = ({ children }) => {
   const cardWidth = useSelector(state => state.cardWidth);
 
   const styles = useMemo(() => ({
@@ -10,7 +10,7 @@ const Card = ({ num }) => {
   }), [cardWidth]);
 
   return(
-    <div style = {styles} className = 'swiper__card card'>Slide {num}</div>
+    <div style = {styles} className = 'swiper__card card'>{children}</div>
   );
 };
 

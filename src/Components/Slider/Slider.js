@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Card from '../Card';
-import { initApp, changeCard, windowResized } from '../../redux/actions';
-import { button_styles } from './button-styles';
+import Pagination from '../Pagination';
+import Button from '../Button';
+import { windowResized } from '../../redux/actions';
 import './slider.scss';
 
 class Slider extends React.Component {
@@ -12,33 +12,30 @@ class Slider extends React.Component {
       initialPos: null,
       isClicked: false,
       transform: 0,
-      diff: 0
+      diff: 0,
+      currentCard: 0
     };
     this.sliderRef = React.createRef();
+    this.changeCurrentCard = this.changeCurrentCard.bind(this);
+    this.handlePrev = this.handlePrev.bind(this);
+    this.handleNext = this.handleNext.bind(this);
   }
 
   componentDidMount() {
-    const { initApp } = this.props;
-    const slides = [];
-    for(let i = 0; i < this.props.slidesCount; i++) {
-      slides.push(
-        <Card key = {i} num = {i + 1} />
-      )
-    }
-    initApp(slides);
+    const sliderBlock = this.sliderRef.current;
     window.addEventListener('resize', this.getSliderWidth);
     window.addEventListener('load', this.getSliderWidth);
     if (window.PointerEvent) {
-      window.addEventListener('pointerdown', this.pointerStart);
-      window.addEventListener('pointermove', this.pointerMove);
-      window.addEventListener('pointerup', this.pointerEnd);  
+      sliderBlock.addEventListener('pointerdown', this.pointerStart);
+      sliderBlock.addEventListener('pointermove', this.pointerMove);
+      sliderBlock.addEventListener('pointerup', this.pointerEnd);  
     } else {
-      window.addEventListener('touchstart', this.pointerStart);
-      window.addEventListener('touchmove', this.pointerMove);
-      window.addEventListener('touchend', this.pointerEnd);  
-      window.addEventListener('mousedown', this.pointerStart);
-      window.addEventListener('mousemove', this.pointerMove);
-      window.addEventListener('mouseup', this.pointerEnd);  
+      sliderBlock.addEventListener('touchstart', this.pointerStart);
+      sliderBlock.addEventListener('touchmove', this.pointerMove);
+      sliderBlock.addEventListener('touchend', this.pointerEnd);  
+      sliderBlock.addEventListener('mousedown', this.pointerStart);
+      sliderBlock.addEventListener('mousemove', this.pointerMove);
+      sliderBlock.addEventListener('mouseup', this.pointerEnd);  
     }
   }
 
@@ -56,33 +53,36 @@ class Slider extends React.Component {
   }
 
   handleNext = () => {
-    const { changeCard, currentCard, slidesCount, viewCount } = this.props;
+    const { slidesCount, viewCount } = this.props;
+    const { currentCard } = this.state;
     if(currentCard < slidesCount - viewCount) {
       const newCard = currentCard + 1;
-      changeCard(newCard);
+      this.setState({ currentCard: newCard });
     } else {
-      changeCard(0);
+      this.setState({ currentCard: 0 });
     }
   }
 
   handlePrev = () => {
-    const { changeCard, currentCard, slidesCount, viewCount } = this.props;
+    const { slidesCount, viewCount } = this.props;
+    const { currentCard } = this.state;
     if(currentCard > 0) {
       const newCard = currentCard - 1;
-      changeCard(newCard);
+      this.setState({ currentCard: newCard });
     } else {
-      changeCard(slidesCount - viewCount);
+      this.setState({ currentCard: slidesCount - viewCount });
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if(prevProps.currentCard !== this.props.currentCard) {
+  componentDidUpdate(_, prevState) {
+    if(prevState.currentCard !== this.state.currentCard) {
       this.handleChangeCardNum();
     }
   }
 
   handleChangeCardNum = () => {
-    const { currentCard, cardWidth } = this.props;
+    const { currentCard } = this.state;
+    const { cardWidth } = this.props;
     this.sliderRef.current.style.transform = `translateX(-${cardWidth * currentCard}px)`;
   }
 
@@ -109,14 +109,18 @@ class Slider extends React.Component {
   }
 
   pointerEnd = () => {
-    const { diff } = this.state;
-    const { cardWidth, currentCard, slidesCount, viewCount, changeCard } = this.props;
+    const { slidesCount, viewCount, cardWidth } = this.props;
+    const { currentCard, diff } = this.state
     this.setState({ isClicked: false });
     if(diff > cardWidth / 5) {
       if(currentCard === 0) {
-        changeCard(slidesCount - viewCount);
+        this.setState({ currentCard: slidesCount - viewCount });
       } else {
-        changeCard(currentCard - 1);
+        this.setState(prev => {
+          return {
+            currentCard: prev.currentCard - 1
+          }
+        });
       }
     } else {
       this.handleChangeCardNum();
@@ -124,24 +128,36 @@ class Slider extends React.Component {
 
     if(diff < -(cardWidth / 5)) {
       if(currentCard === slidesCount - viewCount) {
-        changeCard(0);
+        this.setState({ currentCard: 0 });
       } else {
-        changeCard(currentCard + 1);
+        this.setState(prev => {
+          return {
+            currentCard: prev.currentCard + 1
+          }
+        });
       }
     } else {
       this.handleChangeCardNum();
     }
   }
 
+  changeCurrentCard = (newCard) => {
+    this.setState({ currentCard: newCard })
+  }
+
   render() {
     return(
-      <>
-      <button onClick = {this.handlePrev} style = {{...button_styles.common, ...button_styles.left}}>prev</button>
-      <button onClick = {this.handleNext} style = {{...button_styles.common, ...button_styles.right}}>next</button>
+      <div className = 'wrapper'>
+        <Button direction = 'prev' action = {this.handlePrev} />
+        <Button direction = 'next' action = {this.handleNext} />
         <section ref = {this.sliderRef} className = 'slider'>
-          {this.props.slides}
+          {this.props.children}
         </section>
-      </>
+        <Pagination
+          currentCard = {this.state.currentCard}
+          changeCurrentCard = {this.changeCurrentCard}
+        />
+      </div>
     )
   }
 };
@@ -149,16 +165,11 @@ class Slider extends React.Component {
 const mapStateToProps = state => ({
   slidesCount: state.slidesCount,
   viewCount: state.viewCount,
-  currentCard: state.currentCard,
-  cardWidth: state.cardWidth,
-  slides: state.slides,
-  sliderWidth: state.sliderWidth
+  cardWidth: state.cardWidth
 });
 
 const mapDispatchToProps = dispatch => {
   return {
-    initApp: (...args) => dispatch(initApp(...args)),
-    changeCard: (...args) => dispatch(changeCard(...args)),
     windowResized: (...args) => dispatch(windowResized(...args))
   }
 };

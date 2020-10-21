@@ -7,4 +7,31 @@
     flex-shrink: 0;
     font-size: 2rem;
     outline: 3px solid black;
+
+    img,
+    video,
+    a,
+    textarea,
+    input,
+    button,
+    ul,
+    canvas,
+    select {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    a,
+    ul {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    ul {
+        flex-wrap: wrap;
+        flex-direction: column;
+    }
 }

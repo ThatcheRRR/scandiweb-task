@@ -1,0 +1,19 @@
+.button {
+    position: absolute;
+    z-index: 15;
+    top: 0;
+    width: 45px;
+    height: 100%;
+    outline: none;
+    border: none;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.5);
+
+    &__prev {
+        left: 0;
+    }
+
+    &__next {
+        right: 0;
+    }
+}
