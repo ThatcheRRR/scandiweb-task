@@ -139,6 +139,7 @@ class Slider extends React.Component {
     } else {
       this.handleChangeCardNum();
     }
+    this.setState({ diff: 0 })
   }
 
   changeCurrentCard = (newCard) => {

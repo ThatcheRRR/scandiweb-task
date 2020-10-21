@@ -26,7 +26,7 @@ const App = () => {
           </ul>
         </Card>
         <Card>
-          <a href = '#'>Link</a>
+          <a href = '#' onClick = {e => e.preventDefault()}>Link</a>
         </Card>
         <Card>
           <textarea placeholder = 'textarea' />
