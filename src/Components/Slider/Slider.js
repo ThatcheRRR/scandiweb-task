@@ -25,18 +25,12 @@ class Slider extends React.Component {
     const sliderBlock = this.sliderRef.current;
     window.addEventListener('resize', this.getSliderWidth);
     window.addEventListener('load', this.getSliderWidth);
-    if (window.PointerEvent) {
-      sliderBlock.addEventListener('pointerdown', this.pointerStart);
-      sliderBlock.addEventListener('pointermove', this.pointerMove);
-      sliderBlock.addEventListener('pointerup', this.pointerEnd);  
-    } else {
-      sliderBlock.addEventListener('touchstart', this.pointerStart);
-      sliderBlock.addEventListener('touchmove', this.pointerMove);
-      sliderBlock.addEventListener('touchend', this.pointerEnd);  
-      sliderBlock.addEventListener('mousedown', this.pointerStart);
-      sliderBlock.addEventListener('mousemove', this.pointerMove);
-      sliderBlock.addEventListener('mouseup', this.pointerEnd);  
-    }
+    sliderBlock.addEventListener('touchstart', this.pointerStart);
+    sliderBlock.addEventListener('touchmove', this.pointerMove);
+    sliderBlock.addEventListener('touchend', this.pointerEnd);  
+    sliderBlock.addEventListener('mousedown', this.pointerStart);
+    sliderBlock.addEventListener('mousemove', this.pointerMove);
+    sliderBlock.addEventListener('mouseup', this.pointerEnd);  
   }
 
   getSliderWidth = () => {
@@ -96,9 +90,7 @@ class Slider extends React.Component {
   }
 
   pointerMove = (e) => {
-    if(window.PointerEvent) {
-      e.preventDefault();
-    }
+    e.preventDefault();
     const { isClicked, initialPos, transform } = this.state;
     if(isClicked) {
       const currentPos = e.clientX || e.touches[0].clientX;
